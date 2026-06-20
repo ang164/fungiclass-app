@@ -579,7 +579,7 @@ elif mode == "Batch FASTA":
                     "Level":  list(ordered.keys()),
                     "Count":  list(ordered.values()),
                 })
-                st.bar_chart(chart_df.set_index("Level"), color="#0d0d0d")
+                st.bar_chart(chart_df.set_index("Level"), color="#10b981")
 
                 #Table preview 
                 st.markdown("#### Preview (first 50 rows)")
