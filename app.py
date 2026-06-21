@@ -650,7 +650,7 @@ elif mode == "About":
 
         If you use FungiClass in your research, please cite:
 
-        > *[Author], [Year]. FungiClass: a hierarchical LCPN identifier for fungal ITS
+        > *[Angelica Giusto], [2026]. FungiClass: a hierarchical LCPN identifier for fungal ITS
         > sequences based on the CBS ITS 2025 database. [Journal/Thesis].*
 
         """)
