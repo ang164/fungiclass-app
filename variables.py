@@ -16,12 +16,12 @@ K_MER_SIZE = 6
 N_SPECIES = 10
 #CONFIDENCE_THRESHOLD = 0.8
 THRESHOLDS = {
-    "phylum": 0.76,
-    "class":  0.90,
-    "order":  0.92,
-    "family": 0.88,
+    "phylum": 0.84,
+    "class":  0.68,
+    "order":  0.72,
+    "family": 0.64,
     "genus":  0.84,
-    "species": 0.92,
+    "species": 0.84,
 }
 # Mappa IUPAC modificata per "azzerare" le ambiguità
 # Tutte le lettere ambigue diventano '0'
@@ -90,3 +90,4 @@ LEVEL_PARAMS = {
     "genus": {"n_estimators": 80, "max_depth": 5, "learning_rate": 0.1},
     "species": {"n_estimators": 60, "max_depth": 4, "learning_rate": 0.1}
 }
+
