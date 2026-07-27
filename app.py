@@ -1121,6 +1121,25 @@ def show_batch_results(results, candidates, separations, alignments):
             if selected_separations.empty:
                 st.info("Pairwise separation is unavailable for these candidates.")
             else:
+                limited_separations = selected_separations[
+                    selected_separations["limited_separation"].fillna(False)
+                ]
+
+                if top_1_accepted and not limited_separations.empty:
+                    pair_list = ", ".join(
+                        f"{row['alternative_species']} "
+                        f"(ratio {row['separation_ratio']:.2f})"
+                        for _, row in limited_separations.iterrows()
+                    )
+                    st.warning(
+                        "High-confidence prediction with limited species "
+                        "separability. The Top-1 species was accepted, but its "
+                        "median region is not separated from: "
+                        f"{pair_list}. This does not mean that the prediction "
+                        "is incorrect; it indicates structural ambiguity among "
+                        "these species in the alignment-free representation."
+                    )
+
                 separation_table = selected_separations[
                     [
                         "alternative_rank",
