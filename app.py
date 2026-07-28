@@ -75,6 +75,55 @@ st.markdown(
         line-height: 1;
         text-align: center;
     }
+    .performance-panel {
+        margin: 1rem 0 1.5rem 0;
+    }
+    .performance-row {
+        margin-bottom: 1.15rem;
+    }
+    .performance-header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-bottom: 0.4rem;
+    }
+    .performance-level {
+        color: inherit;
+        font-size: 1rem;
+        font-weight: 650;
+    }
+    .performance-values {
+        color: #8f9099;
+        font-size: 0.9rem;
+        text-align: right;
+    }
+    .performance-track {
+        width: 100%;
+        height: 0.72rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(128, 128, 128, 0.25);
+    }
+    .performance-fill {
+        height: 100%;
+        border-radius: inherit;
+    }
+    .performance-coverage {
+        margin-top: 0.28rem;
+        color: #8f9099;
+        font-size: 0.78rem;
+    }
+    @media (max-width: 700px) {
+        .performance-header {
+            align-items: flex-start;
+            flex-direction: column;
+            gap: 0.1rem;
+        }
+        .performance-values {
+            text-align: left;
+        }
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -1365,7 +1414,7 @@ with st.sidebar:
         unsafe_allow_html=True,
     )
     st.divider()
-    st.warning("Research prototype — not validated for clinical diagnosis.")
+    st.warning("Research prototype, not validated for clinical diagnosis.")
 
 
 if page == "Single sequence":
@@ -1559,27 +1608,51 @@ else:
     )
     st.dataframe(model_summary, hide_index=True)
 
-    st.subheader("Overall test performance")
+    st.subheader("Performance (CBS ITS 2025 test set)")
     st.caption(
-        "Selective accuracy is computed only over predictions accepted at a "
-        "level. Coverage is computed over all 4,813 processable test sequences."
+        "Bar length represents selective accuracy, computed only over predictions "
+        "accepted at that level. Coverage refers to all 4,813 processable test "
+        "sequences."
     )
-    overall_performance = pd.DataFrame(
-        {
-            "Level": ["Phylum", "Class", "Order", "Family", "Genus", "Species"],
-            "Selective accuracy (%)": [97.75, 94.09, 92.64, 91.08, 89.08, 66.84],
-            "Coverage (%)": [
-                4404 / 4813 * 100,
-                4147 / 4813 * 100,
-                3929 / 4813 * 100,
-                3554 / 4813 * 100,
-                2884 / 4813 * 100,
-                971 / 4813 * 100,
-            ],
-            "Accepted predictions": [4404, 4147, 3929, 3554, 2884, 971],
-        }
+    test_size = 4_813
+    overall_performance = [
+        ("Phylum", 97.75, 4_404, "#6366f1"),
+        ("Class", 94.09, 4_147, "#8b5cf6"),
+        ("Order", 92.64, 3_929, "#0ea5e9"),
+        ("Family", 91.08, 3_554, "#10b981"),
+        ("Genus", 89.08, 2_884, "#f59e0b"),
+        ("Species", 66.84, 971, "#ef4444"),
+    ]
+
+    performance_rows = []
+    for level, accuracy, accepted, colour in overall_performance:
+        coverage = accepted / test_size * 100
+        performance_rows.append(
+            '<div class="performance-row">'
+            '<div class="performance-header">'
+            f'<span class="performance-level">{level}</span>'
+            '<span class="performance-values">'
+            f"{accuracy:.2f}% selective accuracy · {accepted:,} accepted"
+            "</span>"
+            "</div>"
+            '<div class="performance-track" role="img" '
+            f'aria-label="{level}: {accuracy:.2f}% selective accuracy">'
+            '<div class="performance-fill" '
+            f'style="width: {accuracy:.2f}%; background: {colour};">'
+            "</div>"
+            "</div>"
+            '<div class="performance-coverage">'
+            f"Coverage: {coverage:.2f}% of {test_size:,} processable sequences"
+            "</div>"
+            "</div>"
+        )
+
+    st.markdown(
+        '<div class="performance-panel">'
+        + "".join(performance_rows)
+        + "</div>",
+        unsafe_allow_html=True,
     )
-    st.dataframe(overall_performance, hide_index=True)
 
     st.subheader("Common and rare test strata")
     stratum_performance = pd.DataFrame(
